@@ -1,11 +1,11 @@
 import express from "express";
 import connectionPool from "../utils/db.mjs";
-// import {validateQuestions} from "../middlewares/questions.validation.mjs";
+import { validateQuestions } from "../middlewares/questions.vaildation.mjs";
 
 const router = express.Router();
 
-// router.post("/", [validateQuestions], async (req, res) => {
-router.post("/", async (req, res) => {
+router.post("/", [validateQuestions], async (req, res) => {
+  // router.post("/", async (req, res) => {
   const questions = {
     ...req.body,
     created_at: new Date(),
