@@ -5,6 +5,326 @@ import { validateAnswerContent } from "../middlewares/content_validation.mjs";
 import { validateVoteData } from "../middlewares/vote_validation.mjs";
 const questionsRouter = Router();
 
+/**
+ * @swagger
+ * tags:
+ *   name: Questions
+ *   description: API for managing questions and answers
+ */
+
+/**
+ * @swagger
+ * /questions/search:
+ *   get:
+ *     summary: Search questions by title or category
+ *     tags: [Questions]
+ *     parameters:
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *         description: Title of the question to search
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Category of the question to search
+ *     responses:
+ *       200:
+ *         description: List of matching questions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Question'
+ *       400:
+ *         description: Invalid search parameters
+ *       500:
+ *         description: Unable to fetch a question
+ */
+
+/**
+ * @swagger
+ * /questions:
+ *   post:
+ *     summary: Create a new question
+ *     tags: [Questions]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/QuestionInput'
+ *     responses:
+ *       201:
+ *         description: Question created successfully
+ *       500:
+ *         description: Unable to create question
+ */
+
+/**
+ * @swagger
+ * /questions:
+ *   get:
+ *     summary: Get all questions
+ *     tags: [Questions]
+ *     responses:
+ *       200:
+ *         description: List of all questions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Question'
+ *       500:
+ *         description: Unable to fetch questions
+ */
+
+/**
+ * @swagger
+ * /questions/{id}:
+ *   get:
+ *     summary: Get a question by ID
+ *     tags: [Questions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the question to fetch
+ *     responses:
+ *       200:
+ *         description: Question details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Question'
+ *       404:
+ *         description: Question not found
+ *       500:
+ *         description: Unable to fetch question
+ */
+
+/**
+ * @swagger
+ * /questions/{id}:
+ *   put:
+ *     summary: Update a question
+ *     tags: [Questions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the question to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/QuestionInput'
+ *     responses:
+ *       200:
+ *         description: Question updated successfully
+ *       404:
+ *         description: Question not found
+ *       500:
+ *         description: Unable to update question
+ */
+
+/**
+ * @swagger
+ * /questions/{id}:
+ *   delete:
+ *     summary: Delete a question
+ *     tags: [Questions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the question to delete
+ *     responses:
+ *       200:
+ *         description: Question deleted successfully
+ *       404:
+ *         description: Question not found
+ *       500:
+ *         description: Unable to delete question
+ */
+
+/**
+ * @swagger
+ * /questions/{id}/answers:
+ *   post:
+ *     summary: Answer a question
+ *     tags: [Answers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the question to answer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AnswerInput'
+ *     responses:
+ *       201:
+ *         description: Answer created successfully
+ *       404:
+ *         description: Question not found
+ *       500:
+ *         description: Unable to create answer
+ */
+
+/**
+ * @swagger
+ * /questions/{id}/answers:
+ *   get:
+ *     summary: Get answers for a specific question
+ *     tags: [Answers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the question to retrieve answers for
+ *     responses:
+ *       200:
+ *         description: List of answers for the question
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Answer'
+ *       404:
+ *         description: No answers found for question
+ *       500:
+ *         description: Unable to fetch answers
+ */
+
+/**
+ * @swagger
+ * /questions/{questionId}/vote:
+ *   post:
+ *     summary: Vote on a question
+ *     tags: [Votes]
+ *     parameters:
+ *       - in: path
+ *         name: questionId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the question to vote on
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/VoteInput'
+ *     responses:
+ *       201:
+ *         description: Vote registered successfully
+ *       404:
+ *         description: Question not found
+ *       500:
+ *         description: Unable to register vote
+ */
+
+/**
+ * @swagger
+ * /answers/{answerId}/vote:
+ *   post:
+ *     summary: Vote on an answer
+ *     tags: [Votes]
+ *     parameters:
+ *       - in: path
+ *         name: answerId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the answer to vote on
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/VoteInput'
+ *     responses:
+ *       201:
+ *         description: Vote registered successfully
+ *       404:
+ *         description: Answer not found
+ *       500:
+ *         description: Unable to register vote
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Question:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         title:
+ *           type: string
+ *         description:
+ *           type: string
+ *         category:
+ *           type: string
+ *     QuestionInput:
+ *       type: object
+ *       required:
+ *         - title
+ *         - description
+ *         - category
+ *       properties:
+ *         title:
+ *           type: string
+ *         description:
+ *           type: string
+ *         category:
+ *           type: string
+ *     Answer:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         question_id:
+ *           type: integer
+ *         content:
+ *           type: string
+ *     AnswerInput:
+ *       type: object
+ *       required:
+ *         - content
+ *       properties:
+ *         content:
+ *           type: string
+ *     VoteInput:
+ *       type: object
+ *       required:
+ *         - vote
+ *       properties:
+ *         vote:
+ *           type: integer
+ *           enum: [1, -1]
+ *           description: Upvote (1) or downvote (-1)
+ */
+
 // API Search
 questionsRouter.get("/search", async (req, res) => {
   const { title, category } = req.query;
